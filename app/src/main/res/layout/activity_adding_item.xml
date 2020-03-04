@@ -1,0 +1,129 @@
+<?xml
+    version="1.0"
+    encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context=".view.itemsdetails.AddingItemActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Label -->
+        <TextView
+            android:text="Date"
+            android:fontFamily="@font/jf"
+            style="@style/CategoryStyle" />
+
+        <!-- Input fields -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:paddingLeft="4dp"
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
+
+            <!-- Name field -->
+            <TextView
+                android:id="@+id/itemdate_textview"
+                android:hint="Date now"
+                android:inputType="none"
+
+                style="@style/EditorFieldStyle" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- Overview category -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Label -->
+        <TextView
+            android:text="Time"
+            style="@style/CategoryStyle" />
+
+        <!-- Input fields -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:paddingLeft="4dp"
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
+
+            <!-- Name field -->
+            <TextView
+                android:id="@+id/itemTime_textview"
+                android:hint="time now"
+                android:inputType="none"
+                style="@style/EditorFieldStyle" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+    <!-- Measurement category -->
+    <LinearLayout
+        android:id="@+id/container_measurement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Label -->
+        <TextView
+            android:text="Value"
+            style="@style/CategoryStyle" />
+
+        <!-- Input fields -->
+        <RelativeLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:paddingLeft="4dp">
+
+            <!-- Weight field -->
+            <EditText
+                android:id="@+id/itemValue_edittext"
+                android:hint="value"
+                android:inputType="number"
+                style="@style/EditorFieldStyle" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/DarkRed"
+        android:text="Save"
+        android:fontFamily="@font/jf"
+        android:onClick="insertNewItem"
+        android:id="@+id/InsertNewItem"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#FFF"
+        />
+
+
+</LinearLayout>

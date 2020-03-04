@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">العداد الذكي</string>
+    <string name="action_settings">Settings</string>
+    <string name="activity_title_home">العناصر الرئيسية</string>
+    <string name="msg_no_notes"> قائمة العناصر فارغة</string>
+    <string name="lbl_new_note_title">عنصر جديد</string>
+    <string name="lbl_edit_note_title">تحديث عنصر</string>
+    <string name="hint_enter_note">ادخل اسم العنصر</string>
+    <string name="update">تحديث</string>
+    <string name="save">حفظ</string>
+    <string name="dialog_title_enter_note"> اسم العنصر </string>
+    <string name="edit"> تعديل </string>
+    <string name="delete"> حذف </string>
+    <string name="dialog_title_choose"> اختر واحدا </string>
+    <string name="action_delete_all"> حذف جميع العناصر </string>
+    <string name="title_activity_items">بيانات العناصر </string>
+
+
+
+</resources>

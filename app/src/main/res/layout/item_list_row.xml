@@ -1,0 +1,192 @@
+<?xml
+    version="1.0"
+    encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="10dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            >
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_item_time"
+                    style="@style/Body"
+                    android:text="التاريخ" />
+
+                <TextView
+                    android:id="@+id/tv_item_date"
+                    style="@style/Body"
+                    android:text="الوقت" />
+
+
+
+
+                <TextView
+                    style="@style/Title"
+                    android:text=" التاريخ" />
+
+            </LinearLayout>
+            <!--<LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <info.androidhive.roomdatabase.utils.RobotoRegularTextView
+                    android:id="@+id/tv_item_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#4d4d4d"
+                    style="@style/Body"
+                    tools:text="Date of the text" />
+
+                <info.androidhive.roomdatabase.utils.RobotoRegularTextView
+                    android:id="@+id/tv_item_time"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    style="@style/Body"
+                    android:layout_height="wrap_content"
+                    tools:text="time of the text" />
+            </LinearLayout>-->
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_item_old_value"
+                    style="@style/Body"
+                    android:text="1/12/2020 9:52:37 PM" />
+
+                <TextView
+                    android:id="@+id/old_value_text"
+                    style="@style/Title"
+                    tools:text="القديم"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dimen_10"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_item_new_value"
+                    style="@style/Body"
+                    android:text="1/12/2020 9:52:37 PM" />
+
+                <TextView
+                    android:id="@+id/new_value_text"
+                    style="@style/Title"
+                    tools:text="الجديد"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dimen_10"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_item_difference"
+                    style="@style/Body"
+                    android:text="1/12/2020 9:52:37 PM" />
+
+                <TextView
+                    android:id="@+id/difference_text"
+                    style="@style/Title"
+                    tools:text="الفرق"/>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_item_cost"
+                    style="@style/Body"
+                    android:text="1/12/2020 9:52:37 PM" />
+
+                <TextView
+                    android:id="@+id/cost_text"
+                    style="@style/Title"
+                    tools:text="السعر"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="3dp"
+            android:background="#E0E0E0" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
