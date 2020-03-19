@@ -21,10 +21,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -32,13 +30,11 @@ import info.androidhive.roomdatabase.R;
 import info.androidhive.roomdatabase.db.entity.NoteEntity;
 import info.androidhive.roomdatabase.ui.viewmodel.NotesListViewModel;
 import info.androidhive.roomdatabase.utils.MyDividerItemDecoration;
-import info.androidhive.roomdatabase.view.itemsdetails.ItemsActivity;
+import info.androidhive.roomdatabase.ui.itemsdetails.ItemsActivity;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class NotesListFragment extends Fragment implements NotesAdapter.NotesAdapterListener {
 
+public class NotesListFragment extends Fragment implements NotesAdapter.NotesAdapterListener
+{
     public static final String TAG = NotesListFragment.class.getSimpleName();
     private NotesListViewModel viewModel;
     private NotesAdapter mAdapter;
@@ -53,21 +49,19 @@ public class NotesListFragment extends Fragment implements NotesAdapter.NotesAda
     TextView noNotesView;
 
     public NotesListFragment() {
-        // Required empty public constructor
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_note_list, container, false);
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = ViewModelProviders.of(getActivity()).get(NotesListViewModel.class);
@@ -78,11 +72,11 @@ public class NotesListFragment extends Fragment implements NotesAdapter.NotesAda
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new MyDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL, 16));
         recyclerView.setAdapter(mAdapter);
-
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState)
+    {
         super.onActivityCreated(savedInstanceState);
 
         viewModel.getNotes().observe(this, new Observer<List<NoteEntity>>() {
@@ -94,10 +88,14 @@ public class NotesListFragment extends Fragment implements NotesAdapter.NotesAda
         });
     }
 
-    private void toggleEmptyNotes(int size) {
-        if (size > 0) {
+    private void toggleEmptyNotes(int size)
+    {
+        if (size > 0)
+        {
             noNotesView.setVisibility(View.GONE);
-        } else {
+        }
+        else
+        {
             noNotesView.setVisibility(View.VISIBLE);
         }
     }
@@ -108,12 +106,8 @@ public class NotesListFragment extends Fragment implements NotesAdapter.NotesAda
         viewModel.deleteAllNotes();
     }
 
-    /**
-     * Shows alert dialog with EditText options to enter / edit
-     * a note.
-     * when shouldUpdate=true, it automatically displays old note and changes the
-     * button text to UPDATE
-     */
+
+
     public void showNoteDialog(final boolean shouldUpdate, final NoteEntity note, final int position)
     {
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getContext());
@@ -188,11 +182,8 @@ public class NotesListFragment extends Fragment implements NotesAdapter.NotesAda
         });
     }
 
-    /**
-     * Opens dialog with Edit - Delete options
-     * Edit - 0
-     * Delete - 0
-     */
+
+
     private void showActionsDialog(int noteId, final int position)
     {
         // fetch the note from db

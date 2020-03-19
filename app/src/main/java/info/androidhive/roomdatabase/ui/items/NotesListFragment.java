@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.view.items;
+package info.androidhive.roomdatabase.ui.items;
 
 
 import android.arch.lifecycle.Observer;
@@ -32,7 +32,7 @@ import info.androidhive.roomdatabase.ui.viewmodel.NotesListViewModel;
 import info.androidhive.roomdatabase.R;
 import info.androidhive.roomdatabase.db.entity.NoteEntity;
 import info.androidhive.roomdatabase.utils.MyDividerItemDecoration;
-import info.androidhive.roomdatabase.view.itemsdetails.ItemsActivity;
+import info.androidhive.roomdatabase.ui.itemsdetails.ItemsActivity;
 
 /**
  * A simple {@link Fragment} subclass.

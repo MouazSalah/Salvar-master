@@ -11,13 +11,9 @@ import java.util.List;
 
 import info.androidhive.roomdatabase.db.entity.NoteEntity;
 
-/**
- * Created by ravi on 05/02/18.
- */
-
 @Dao
-public interface NoteDao {
-
+public interface NoteDao
+{
     @Query("SELECT * FROM notes_table ORDER BY id DESC")
     LiveData<List<NoteEntity>> getAllNotes();
 

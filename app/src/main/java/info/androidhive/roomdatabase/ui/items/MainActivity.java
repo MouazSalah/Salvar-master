@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.view.items;
+package info.androidhive.roomdatabase.ui.items;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import info.androidhive.roomdatabase.R;
-import info.androidhive.roomdatabase.view.login.SplashActivity;
+import info.androidhive.roomdatabase.ui.login.SplashActivity;
 
 public class MainActivity extends AppCompatActivity
 {

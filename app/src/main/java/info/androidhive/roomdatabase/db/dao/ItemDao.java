@@ -6,17 +6,12 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
-
-
 import java.util.List;
-
 import info.androidhive.roomdatabase.db.entity.ItemEntity;
-import info.androidhive.roomdatabase.db.entity.NoteEntity;
 
 @Dao
 public interface ItemDao
 {
-
     @Query("SELECT * FROM items_table ORDER BY item_id DESC")
     LiveData<List<ItemEntity>> getAllItems();
 
@@ -25,10 +20,6 @@ public interface ItemDao
 
     @Query("SELECT * FROM items_table WHERE item_id==:flatId ORDER BY item_id DESC")
     ItemEntity getSelectedItemById(int flatId);
-
-    /*@Query("SELECT * FROM items_table WHERE item_id=:id")
-    ItemEntity getSelectedItemById(int id);*/
-
 
     @Insert
     long insertNewItem(ItemEntity itemEntity);
@@ -41,7 +32,4 @@ public interface ItemDao
 
     @Query("DELETE FROM items_table")
     void deleteAllITems();
-
-
-
 }

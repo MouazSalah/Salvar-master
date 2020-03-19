@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.view.login;
+package info.androidhive.roomdatabase.ui.login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import info.androidhive.roomdatabase.R;
-import info.androidhive.roomdatabase.view.items.MainActivity;
+import info.androidhive.roomdatabase.ui.items.MainActivity;
 
 public class LoginActivity extends AppCompatActivity
 {

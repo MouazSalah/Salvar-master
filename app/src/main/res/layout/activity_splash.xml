@@ -12,7 +12,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:background="@color/app_background"
-    tools:context=".view.login.SplashActivity">
+    tools:context=".ui.login.SplashActivity">
 
     <ImageView
         android:layout_width="200dp"

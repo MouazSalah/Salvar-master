@@ -5,21 +5,17 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
-
 import info.androidhive.roomdatabase.db.dao.ItemDao;
 import info.androidhive.roomdatabase.db.entity.ItemEntity;
 import info.androidhive.roomdatabase.db.entity.NoteEntity;
 import info.androidhive.roomdatabase.db.dao.NoteDao;
 import info.androidhive.roomdatabase.db.converter.DateConverter;
 
-/**
- * Created by ravi on 05/02/18.
- */
 
 @Database(entities = {NoteEntity.class, ItemEntity.class}, version = 6)
 @TypeConverters({DateConverter.class})
-public abstract class AppDatabase extends RoomDatabase {
-
+public abstract class AppDatabase extends RoomDatabase
+{
     public abstract NoteDao noteDao();
     public abstract ItemDao itemDao();
 
@@ -34,10 +30,9 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (INSTANCE == null)
                 {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            AppDatabase.class, "notes_database")
+                             AppDatabase.class, "notes_database")
                             .fallbackToDestructiveMigration()
                             .build();
-
                 }
             }
         }

@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.view.itemsdetails;
+package info.androidhive.roomdatabase.ui.itemsdetails;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -30,7 +30,6 @@ import butterknife.OnClick;
 import info.androidhive.roomdatabase.R;
 import info.androidhive.roomdatabase.db.entity.ItemEntity;
 import info.androidhive.roomdatabase.ui.viewmodel.ItemsListViewModel;
-import info.androidhive.roomdatabase.view.itemsdetails.ItemsActivity;
 
 public class AddingItemActivity extends AppCompatActivity
 {
@@ -39,7 +38,6 @@ public class AddingItemActivity extends AppCompatActivity
     @BindView(R.id.itemValue_edittext) EditText itemValueEditText;
 
     @BindView(R.id.InsertNewItem) Button saveItemBtn;
-
 
     String resultTesxt;
     double itemValue, oldValue, differenceValue;
@@ -86,7 +84,6 @@ public class AddingItemActivity extends AppCompatActivity
                 Log.d("size", items.size() + "");
             }
         });
-
     }
 
 
@@ -106,15 +103,12 @@ public class AddingItemActivity extends AppCompatActivity
             checkAllFields();
             return true;
         }
-
         if (id == R.id.action_cancel)
         {
             finish();
         }
-
         return super.onOptionsItemSelected(item);
     }
-
 
     @OnClick(R.id.InsertNewItem) void AddItem()
     {
@@ -145,9 +139,7 @@ public class AddingItemActivity extends AppCompatActivity
                 return false;
 
         return true;
-
     }
-
 
     public boolean checkAllFields()
     {
@@ -205,6 +197,5 @@ public class AddingItemActivity extends AppCompatActivity
         intent.putExtra("item_cost", itemCost);
         startActivity(intent);
         finish();
-
     }
 }

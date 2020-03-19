@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.view.itemsdetails;
+package info.androidhive.roomdatabase.ui.itemsdetails;
 
 import android.Manifest;
 import android.content.DialogInterface;

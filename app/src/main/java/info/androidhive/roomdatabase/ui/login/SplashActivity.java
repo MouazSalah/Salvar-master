@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.view.login;
+package info.androidhive.roomdatabase.ui.login;
 
 import android.content.Intent;
 import android.os.Handler;

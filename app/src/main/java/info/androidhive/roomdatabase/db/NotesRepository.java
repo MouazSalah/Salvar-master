@@ -3,27 +3,20 @@ package info.androidhive.roomdatabase.db;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
-
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import info.androidhive.roomdatabase.db.dao.ItemDao;
 import info.androidhive.roomdatabase.db.entity.ItemEntity;
 import info.androidhive.roomdatabase.db.entity.NoteEntity;
 import info.androidhive.roomdatabase.db.dao.NoteDao;
 
-/**
- * Created by ravi on 05/02/18.
- */
-
-public class NotesRepository {
-
+public class NotesRepository
+{
     private NoteDao mNoteDao;
     private LiveData<List<NoteEntity>> mAllNotes;
     private ItemDao mItemDao;
     private LiveData<List<ItemEntity>> mAllItems;
     int flatId;
-
 
     public NotesRepository(Application application)
     {
@@ -37,7 +30,6 @@ public class NotesRepository {
     public LiveData<List<NoteEntity>> getAllNotes() {
         return mAllNotes;
     }
-
 
     public NoteEntity getNote(int noteId) throws ExecutionException, InterruptedException {
         return new getNoteAsync(mNoteDao).execute(noteId).get();
@@ -65,14 +57,10 @@ public class NotesRepository {
         return mItemDao.getAllItemsByFlatId(flatId);
     }
 
-
     public ItemEntity getItem(int itemId) throws ExecutionException, InterruptedException
     {
         return new NotesRepository.getSelectedItemAsync(mItemDao).execute(itemId).get();
     }
-
-
-
 
     public void insertItem(ItemEntity itemEntity) {
         new NotesRepository.insertItemAsync(mItemDao).execute(itemEntity);
@@ -94,13 +82,6 @@ public class NotesRepository {
 
 
 
-
-
-    /**
-     * NOTE: all write operations should be done in background thread,
-     * otherwise the following error will be thrown
-     * `java.lang.IllegalStateException: Cannot access database on the main thread since it may potentially lock the UI for a long period of time.`
-     */
 
     private static class getNoteAsync extends AsyncTask<Integer, Void, NoteEntity> {
 
@@ -178,7 +159,6 @@ public class NotesRepository {
 
 
 
-
     private static class getSelectedItemAsync extends AsyncTask<Integer, Void, ItemEntity>
     {
 
@@ -245,7 +225,6 @@ public class NotesRepository {
     }
 
 
-
     private static class deleteAllItemsAsync extends AsyncTask<ItemEntity, Void, Void> {
 
         private ItemDao mItemDao;
@@ -260,5 +239,4 @@ public class NotesRepository {
             return null;
         }
     }
-
 }

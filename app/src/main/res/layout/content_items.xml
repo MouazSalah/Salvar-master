@@ -10,5 +10,5 @@
     android:id="@+id/items_container"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".view.itemsdetails.ItemsActivity"
+    tools:context=".ui.itemsdetails.ItemsActivity"
     tools:showIn="@layout/activity_items"/>

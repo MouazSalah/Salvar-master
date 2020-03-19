@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.view.items;
+package info.androidhive.roomdatabase.ui.items;
 
 import android.content.Context;
 import android.content.res.TypedArray;

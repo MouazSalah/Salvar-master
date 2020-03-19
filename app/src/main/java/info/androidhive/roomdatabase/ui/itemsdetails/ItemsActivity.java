@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.view.itemsdetails;
+package info.androidhive.roomdatabase.ui.itemsdetails;
 
 import android.Manifest;
 import android.app.Activity;
@@ -69,6 +69,7 @@ public class ItemsActivity extends AppCompatActivity
     String resultText;
     double itemValue;
     double itemCost;
+    double oldValue, differentValue;
     private int PICK_IMAGE_REQUEST = 1;
 
     List<ItemEntity> items = new ArrayList<>();
@@ -95,6 +96,17 @@ public class ItemsActivity extends AppCompatActivity
         Log.d("item item Cost" , "" + itemCost);
         Log.d("item flat id" , "" + flatId);
 
+        viewModel.getAllItemsByFlatId(flatId).observe(this, new Observer<List<ItemEntity>>()
+        {
+            @Override
+            public void onChanged(@Nullable List<ItemEntity> itemsList)
+            {
+                items = itemsList;
+                toggleEmptyNotes(items.size());
+                Log.d("size = ", items.size() + "");
+            }
+        });
+
         int cropresult = getIntent().getIntExtra("crop_value" , 1);
         if (cropresult == 2)
         {
@@ -108,7 +120,6 @@ public class ItemsActivity extends AppCompatActivity
             processImage();
             insertNewItem();
             Log.d("crop_value = ", "cropped");
-
         }
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.items_fab);
@@ -120,18 +131,6 @@ public class ItemsActivity extends AppCompatActivity
                 showActionDialog();
             }
         });
-
-        viewModel.getAllItemsByFlatId(flatId).observe(this, new Observer<List<ItemEntity>>()
-        {
-            @Override
-            public void onChanged(@Nullable List<ItemEntity> itemsList)
-            {
-                items = itemsList;
-                toggleEmptyNotes(items.size());
-                Log.d("size = ", items.size() + "");
-            }
-        });
-
 
     }
 
@@ -479,24 +478,33 @@ public class ItemsActivity extends AppCompatActivity
         return localTime;
     }
 
-
     public void insertNewItem()
     {
-        double differenceValue = itemValue;
-        double oldValue = 0;
+         differentValue = itemValue;
+         oldValue = 0;
 
         if (items.size() > 0)
         {
-            differenceValue = itemValue - items.get(0).getItemNewValue();
+            differentValue = itemValue - items.get(0).getItemNewValue();
             oldValue = items.get(0).getItemDifferenceValue();
         }
 
-        Log.d("item new value", itemValue + "");
-        Log.d("item old value", oldValue + "");
-        Log.d("item difference value", differenceValue + "");
+       /* SharedPrefMethods prefMethods = new SharedPrefMethods(this);
+        if (prefMethods.getOldValue() == 0)
+        {
+            oldValue = prefMethods.getOldValue();
+        }
 
-        ItemEntity itemEntity = new ItemEntity( oldValue , itemValue, differenceValue,
-                differenceValue * itemCost ,getCurrentDate(), getCurrentTime() , flatId);
+        differenceValue = itemValue - oldValue;
+        prefMethods.saveOldValue(itemValue);
+*/
+
+        Log.d("Flagitem new value", itemValue + "");
+        Log.d("Flagitem old value", oldValue + "");
+        Log.d("Flagitem differ value", differentValue + "");
+
+        ItemEntity itemEntity = new ItemEntity( oldValue , itemValue, differentValue,
+                differentValue * itemCost ,getCurrentDate(), getCurrentTime() , flatId);
         viewModel.insertItem(itemEntity);
         Toast.makeText(this, "saved", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getApplicationContext(), ItemsActivity.class);
@@ -504,7 +512,6 @@ public class ItemsActivity extends AppCompatActivity
         intent.putExtra("item_cost", itemCost);
         startActivity(intent);
         finish();
-
     }
 
     public static class ItemListFragment extends Fragment implements ItemAdapter.ItemsAdapterListener
