@@ -20,11 +20,11 @@ import butterknife.ButterKnife;
 import info.androidhive.roomdatabase.R;
 import info.androidhive.roomdatabase.db.entity.NoteEntity;
 
-public class NotesAdapter extends ListAdapter<NoteEntity, NotesAdapter.MyViewHolder> {
-    private static final String TAG = NotesAdapter.class.getSimpleName();
+public class ItemsAdapter extends ListAdapter<NoteEntity, ItemsAdapter.MyViewHolder> {
+    private static final String TAG = ItemsAdapter.class.getSimpleName();
 
     private Context context;
-    private NotesAdapter.NotesAdapterListener listener;
+    private ItemsAdapter.NotesAdapterListener listener;
 
     public class MyViewHolder extends RecyclerView.ViewHolder
     {
@@ -62,22 +62,22 @@ public class NotesAdapter extends ListAdapter<NoteEntity, NotesAdapter.MyViewHol
         }
     }
 
-    public NotesAdapter(Context context, NotesAdapter.NotesAdapterListener listener) {
+    public ItemsAdapter(Context context, ItemsAdapter.NotesAdapterListener listener) {
         super(DIFF_CALLBACK);
         this.context = context;
         this.listener = listener;
     }
 
     @Override
-    public NotesAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.note_list_row, parent, false);
 
-        return new NotesAdapter.MyViewHolder(itemView);
+        return new ItemsAdapter.MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(NotesAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(ItemsAdapter.MyViewHolder holder, int position) {
         NoteEntity note = getNote(position);
         if (note != null)
         {

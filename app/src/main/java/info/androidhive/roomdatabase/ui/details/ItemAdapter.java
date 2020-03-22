@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.ui.itemsdetails;
+package info.androidhive.roomdatabase.ui.details;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

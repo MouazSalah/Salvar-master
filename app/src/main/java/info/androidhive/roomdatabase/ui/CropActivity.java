@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.ui.itemsdetails;
+package info.androidhive.roomdatabase.ui;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -22,6 +22,7 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import info.androidhive.roomdatabase.R;
+import info.androidhive.roomdatabase.ui.details.ItemsActivity;
 
 public class CropActivity extends AppCompatActivity
 {

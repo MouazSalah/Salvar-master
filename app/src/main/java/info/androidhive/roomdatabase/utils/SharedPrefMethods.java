@@ -16,16 +16,6 @@ public class SharedPrefMethods
         editor = pref.edit();
     }
 
-    public void saveOldValue(double value)
-    {
-        editor.putLong("oldValue", (long) value);
-        editor.commit();
-    }
-
-    public long getOldValue()
-    {
-        return pref.getLong("oldValue", 0);
-    }
 
 
 }

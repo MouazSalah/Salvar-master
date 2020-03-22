@@ -27,14 +27,14 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState == null)
         {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new NotesListFragment(), NotesListFragment.TAG)
+                    .replace(R.id.container, new ItemsListFragment(), ItemsListFragment.TAG)
                     .commitNow();
         }
     }
 
     @OnClick(R.id.fab)
     void onFabClick() {
-        NotesListFragment fragment = (NotesListFragment) getSupportFragmentManager().findFragmentByTag(NotesListFragment.TAG);
+        ItemsListFragment fragment = (ItemsListFragment) getSupportFragmentManager().findFragmentByTag(ItemsListFragment.TAG);
         if (fragment != null) {
             fragment.showNoteDialog(false, null, -1);
         }
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity
     {
         if (item.getItemId() == R.id.action_delete_all)
         {
-            NotesListFragment fragment = (NotesListFragment) getSupportFragmentManager().findFragmentByTag(NotesListFragment.TAG);
+            ItemsListFragment fragment = (ItemsListFragment) getSupportFragmentManager().findFragmentByTag(ItemsListFragment.TAG);
             if (fragment != null) {
                 fragment.deleteAllNotes();
             }

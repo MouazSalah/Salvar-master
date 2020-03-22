@@ -1,3 +1,4 @@
+/*
 package info.androidhive.roomdatabase.utils;
 
 import android.app.Application;
@@ -20,3 +21,4 @@ public class AppContext extends Application
         return mInstance;
     }
 }
+*/

@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.ui.itemsdetails;
+package info.androidhive.roomdatabase.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import info.androidhive.roomdatabase.R;
 import info.androidhive.roomdatabase.db.entity.ItemEntity;
+import info.androidhive.roomdatabase.ui.details.ItemsActivity;
 import info.androidhive.roomdatabase.ui.viewmodel.ItemsListViewModel;
 
 public class AddingItemActivity extends AppCompatActivity

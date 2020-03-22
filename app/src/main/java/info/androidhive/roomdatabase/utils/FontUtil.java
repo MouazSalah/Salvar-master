@@ -1,3 +1,4 @@
+/*
 package info.androidhive.roomdatabase.utils;
 
 import android.graphics.Typeface;
@@ -31,3 +32,4 @@ public class FontUtil {
         return tf;
     }
 }
+*/

@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.ui.itemsdetails;
+package info.androidhive.roomdatabase.ui.details;
 
 import android.Manifest;
 import android.app.Activity;
@@ -19,7 +19,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -35,11 +34,9 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -49,52 +46,54 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import info.androidhive.roomdatabase.R;
 import info.androidhive.roomdatabase.db.entity.ItemEntity;
+import info.androidhive.roomdatabase.ui.AddingItemActivity;
+import info.androidhive.roomdatabase.ui.CropActivity;
 import info.androidhive.roomdatabase.ui.viewmodel.ItemsListViewModel;
-import info.androidhive.roomdatabase.utils.MyDividerItemDecoration;
 
-public class ItemsActivity extends AppCompatActivity
+public class ItemsActivity extends AppCompatActivity implements ItemAdapter.ItemsAdapterListener
 {
-    int flatId;
-    private ItemsListViewModel viewModel;
     private static final int CAMERA_REQUEST = 1888;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
-    public static Bitmap bitmapPhoto;
-    String resultText;
-    double itemValue;
-    double itemCost;
-    double oldValue, differentValue;
     private int PICK_IMAGE_REQUEST = 1;
 
+    int flatId, cropResult;
+    double itemValue, oldValue, differentValue, itemCost;
+
+    String resultText;
+
+    private ItemsListViewModel viewModel;
+
+    public static Bitmap bitmapPhoto;
+
     List<ItemEntity> items = new ArrayList<>();
+
+    private ItemAdapter itemAdapter;
+
+    @BindView(R.id.items_recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.items_empty_view) RelativeLayout emptyItemsView;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_items);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
 
-        if (savedInstanceState == null)
-        {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.items_container, new ItemListFragment(), ItemListFragment.TAG)  
-                    .commitNow();
-        }
+        setSupportActionBar(toolbar);
 
         viewModel = ViewModelProviders.of(this).get(ItemsListViewModel.class);
 
         flatId = getIntent().getIntExtra("flat_id", 0);
         itemCost = getIntent().getDoubleExtra("item_cost" , 1);
-        Log.d("item item Cost" , "" + itemCost);
-        Log.d("item flat id" , "" + flatId);
+        cropResult = getIntent().getIntExtra("crop_value" , 1);
 
         viewModel.getAllItemsByFlatId(flatId).observe(this, new Observer<List<ItemEntity>>()
         {
@@ -103,12 +102,11 @@ public class ItemsActivity extends AppCompatActivity
             {
                 items = itemsList;
                 toggleEmptyNotes(items.size());
-                Log.d("size = ", items.size() + "");
             }
         });
 
-        int cropresult = getIntent().getIntExtra("crop_value" , 1);
-        if (cropresult == 2)
+
+        if (cropResult == 2)
         {
             flatId = getIntent().getIntExtra("flat_id", 0);
             itemCost = getIntent().getDoubleExtra("item_cost", 1);
@@ -122,47 +120,34 @@ public class ItemsActivity extends AppCompatActivity
             Log.d("crop_value = ", "cropped");
         }
 
-        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.items_fab);
-
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-                showActionDialog();
-            }
-        });
-
-    }
-
-    @OnClick(R.id.items_fab)
-    void takePicture()
-    {
-        showActionDialog();
+        itemAdapter = new ItemAdapter(this, (ItemAdapter.ItemsAdapterListener) this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(itemAdapter);
     }
 
     private void toggleEmptyNotes(int size)
     {
         if (size > 0)
         {
-            Log.d("item last value" , "" + items.get(0).getItemNewValue());
-           // emptyItemsView.setVisibility(View.GONE);
+            emptyItemsView.setVisibility(View.GONE);
         }
         else
         {
-            Log.d("item" , "No Items");
-           // emptyItemsView.setVisibility(View.VISIBLE);
+            emptyItemsView.setVisibility(View.VISIBLE);
         }
     }
 
+    @OnClick(R.id.items_fab)
+    public void onFabButtonClicked()
+    {
+        showActionDialog();
+    }
 
     @OnClick(R.id.items_fab)
-    void onFabClick()
+    public void onFabClick()
     {
-        ItemListFragment fragment = (ItemListFragment) getSupportFragmentManager().findFragmentByTag(ItemListFragment.TAG);
-        if (fragment != null)
-        {
-            fragment.showNoteDialog(false, null, -1);
-        }
+         showNoteDialog(false, null, -1);
     }
 
     @Override
@@ -209,11 +194,7 @@ public class ItemsActivity extends AppCompatActivity
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
             bitmapPhoto = (Bitmap) data.getExtras().get("data");
-            Intent intent = new Intent(getApplicationContext(), CropActivity.class);
-            intent.putExtra("flat_id", flatId);
-            intent.putExtra("item_cost", itemCost);
-            startActivity(intent);
-            finish();
+
         }
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
@@ -223,16 +204,18 @@ public class ItemsActivity extends AppCompatActivity
             try
             {
                 bitmapPhoto = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                Intent intent = new Intent(getApplicationContext(), CropActivity.class);
-                intent.putExtra("flat_id", flatId);
-                intent.putExtra("item_cost", itemCost);
-                startActivity(intent);
-                finish();
-
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 e.printStackTrace();
             }
         }
+
+        Intent intent = new Intent(getApplicationContext(), CropActivity.class);
+        intent.putExtra("flat_id", flatId);
+        intent.putExtra("item_cost", itemCost);
+        startActivity(intent);
+        finish();
     }
 
     // may need to do this in a different thread(Async Task)
@@ -289,54 +272,6 @@ public class ItemsActivity extends AppCompatActivity
         {
             Log.d("TAG", "processImage: not operational");
         }
-    }
-
-    private void showActionDialog()
-    {
-        String[] dialogLanguages = {"الكاميرا","يدوي" , "الاستوديو"};
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("طريقة تسجيل القيمة");
-        builder.setItems(dialogLanguages, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                if (which == 0)
-                {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                    {
-                        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                        {
-                            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-                        }
-                        else
-                        {
-                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(cameraIntent, CAMERA_REQUEST);
-                        }
-                    }
-                }
-                if (which == 1)
-                {
-                    Toast.makeText(ItemsActivity.this, "shown", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), AddingItemActivity.class);
-                    intent.putExtra("flat_id", flatId);
-                    intent.putExtra("item_cost", itemCost);
-                    startActivity(intent);
-                    finish();
-                }
-
-                if (which == 2)
-                {
-                    getImageFromGallery();
-                }
-            }
-        });
-
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-
     }
 
     private void getImageFromGallery()
@@ -514,235 +449,180 @@ public class ItemsActivity extends AppCompatActivity
         finish();
     }
 
-    public static class ItemListFragment extends Fragment implements ItemAdapter.ItemsAdapterListener
+    @Override
+    public void onClick(int itemId, int position)
     {
-        public static final String TAG = ItemListFragment.class.getSimpleName();
-        private ItemsListViewModel viewModel;
-        private ItemAdapter mAdapter;
-        private Unbinder unbinder;
-        private int flatId;
+        showActionsDialog(itemId, position);
+    }
 
-        @BindView(R.id.items_recycler_view)
-        RecyclerView recyclerView;
-
-        @BindView(R.id.items_empty_view)
-        RelativeLayout emptyItemsView;
-
-        public ItemListFragment() {
-            // Required empty public constructor
-        }
+    @Override
+    public void onLongClick(int itemId, int position)
+    {
+        showActionsDialog(itemId, position);
+    }
 
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    private void showActionsDialog(int itemId, final int position)
+    {
+        final ItemEntity itemEntity;
+
+        try
         {
-            // Inflate the layout for this fragment
-            View view = inflater.inflate(R.layout.fragment_item_list, container, false);
-            unbinder = ButterKnife.bind(this, view);
-            flatId = getActivity().getIntent().getIntExtra("flat_id", 0);
-            return view;
-        }
+            itemEntity = viewModel.getItem(itemId);
 
-        @Override
-        public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
-        {
-            super.onViewCreated(view, savedInstanceState);
+            CharSequence colors[] = new CharSequence[]{getString(R.string.edit), getString(R.string.delete)};
 
-            viewModel = ViewModelProviders.of(getActivity()).get(ItemsListViewModel.class);
-
-            mAdapter = new ItemAdapter(getActivity(), (ItemAdapter.ItemsAdapterListener) this);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.addItemDecoration(new MyDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL, 16));
-            recyclerView.setAdapter(mAdapter);
-
-        }
-
-        @Override
-        public void onActivityCreated(@Nullable Bundle savedInstanceState)
-        {
-            super.onActivityCreated(savedInstanceState);
-
-            viewModel.getAllItemsByFlatId(flatId).observe(this, new Observer<List<ItemEntity>>()
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.dialog_title_choose));
+            builder.setItems(colors, new DialogInterface.OnClickListener()
             {
                 @Override
-                public void onChanged(@Nullable List<ItemEntity> items)
+                public void onClick(DialogInterface dialog, int which)
                 {
-                    mAdapter.submitList(items);
-                    toggleEmptyNotes(items.size());
-                }
-            });
-        }
-
-        private void toggleEmptyNotes(int size)
-        {
-            if (size > 0)
-            {
-                emptyItemsView.setVisibility(View.GONE);
-            }
-            else
-            {
-                emptyItemsView.setVisibility(View.VISIBLE);
-            }
-        }
-
-        public void deleteAllItems()
-        {
-            viewModel.deleteAllItems();
-        }
-
-        /**
-         * Shows alert dialog with EditText options to enter / edit
-         * a note.
-         * when shouldUpdate=true, it automatically displays old note and changes the
-         * button text to UPDATE
-         */
-        public void showNoteDialog(final boolean shouldUpdate, final ItemEntity itemEntity, final int position)
-        {
-            LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getContext());
-            View view = layoutInflaterAndroid.inflate(R.layout.note_dialog, null);
-
-            AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(getContext());
-            alertDialogBuilderUserInput.setView(view);
-
-            final EditText inputNote = view.findViewById(R.id.note);
-            TextView dialogTitle = view.findViewById(R.id.dialog_title);
-            dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_note_title) : getString(R.string.lbl_edit_note_title));
-
-            if (shouldUpdate && itemEntity != null)
-            {
-                // append sets text to EditText and places the cursor at the end
-                inputNote.append(itemEntity.getItemNewValue()+ "");
-            }
-            alertDialogBuilderUserInput
-                    .setCancelable(false)
-                    .setPositiveButton(shouldUpdate ? getString(R.string.update) : getString(R.string.save), new DialogInterface.OnClickListener()
+                    if (which == 0)
                     {
-                        public void onClick(DialogInterface dialogBox, int id)
-                        {
-
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel,
-                            new DialogInterface.OnClickListener()
-                            {
-                                public void onClick(DialogInterface dialogBox, int id)
-                                {
-                                    dialogBox.cancel();
-                                }
-                            });
-
-            final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
-            alertDialog.show();
-
-            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    // Show toast message when no text is entered
-                    if (TextUtils.isEmpty(inputNote.getText().toString()))
-                    {
-                        Toast.makeText(getActivity(), getString(R.string.dialog_title_enter_note), Toast.LENGTH_SHORT).show();
-                        return;
+                        showNoteDialog(true, itemEntity, position);
                     }
                     else
                     {
-                        alertDialog.dismiss();
+                        showAlertDialog(itemEntity);
                     }
                 }
             });
+            builder.show();
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+    }
 
-        /**
-         * Opens dialog with Edit - Delete options
-         * Edit - 0
-         * Delete - 0
-         */
-        private void showActionsDialog(int itemId, final int position)
+    private void showActionDialog()
+    {
+        String[] dialogLanguages = {"الكاميرا","يدوي" , "الاستوديو"};
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("طريقة تسجيل القيمة");
+        builder.setItems(dialogLanguages, new DialogInterface.OnClickListener()
         {
-            // fetch the note from db
-            final ItemEntity itemEntity;
-            try
+            @Override
+            public void onClick(DialogInterface dialog, int which)
             {
-                itemEntity = viewModel.getItem(itemId);
-
-                CharSequence colors[] = new CharSequence[]{getString(R.string.edit), getString(R.string.delete)};
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle(getString(R.string.dialog_title_choose));
-                builder.setItems(colors, new DialogInterface.OnClickListener()
+                if (which == 0)
                 {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                     {
-                        if (which == 0)
+                        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
                         {
-                            showNoteDialog(true, itemEntity, position);
+                            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
                         }
                         else
                         {
-                            showAlertDialog(itemEntity);
+                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(cameraIntent, CAMERA_REQUEST);
                         }
                     }
-                });
-                builder.show();
+                }
+                if (which == 1)
+                {
+                    Toast.makeText(ItemsActivity.this, "shown", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), AddingItemActivity.class);
+                    intent.putExtra("flat_id", flatId);
+                    intent.putExtra("item_cost", itemCost);
+                    startActivity(intent);
+                    finish();
+                }
 
-            } catch (ExecutionException e) {
-                // TODO - handle error
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                // TODO - handle error
-                e.printStackTrace();
+                if (which == 2)
+                {
+                    getImageFromGallery();
+                }
             }
-        }
+        });
 
-        public void showAlertDialog(final ItemEntity itemEntity)
-        {
-            new AlertDialog.Builder(getActivity()).setTitle("رسالة تحذير")
-                    .setMessage("هل تريد حذف ذلك العنصر؟")
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
 
-                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                    // The dialog is automatically dismissed when a dialog button is clicked.
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            viewModel.deleteItem(itemEntity);
-                        }
-                    })
-
-                    // A null listener allows the button to dismiss the dialog and take no further action.
-                    .setNegativeButton(android.R.string.no, null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-        }
-
-        @Override
-        public void onClick(int itemId, int position)
-        {
-            showActionsDialog(itemId, position);
-
-            /*Intent intent = new Intent(getActivity(), DetailsActivity.class);
-            intent.putExtra("flat_id", flatId);
-            startActivity(intent);*/
-        }
-
-        @Override
-        public void onLongClick(int itemId, int position)
-        {
-            showActionsDialog(itemId, position);
-        }
-
-        @Override
-        public void onDestroy()
-        {
-            if (unbinder != null)
-            {
-                unbinder.unbind();
-            }
-            super.onDestroy();
-        }
     }
+
+
+    public void showAlertDialog(final ItemEntity itemEntity)
+    {
+        new AlertDialog.Builder(this).setTitle("رسالة تحذير")
+                .setMessage("هل تريد حذف ذلك العنصر؟")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        viewModel.deleteItem(itemEntity);
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    public void showNoteDialog(final boolean shouldUpdate, final ItemEntity itemEntity, final int position)
+    {
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(this);
+        View view = layoutInflaterAndroid.inflate(R.layout.note_dialog, null);
+
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(this);
+        alertDialogBuilderUserInput.setView(view);
+
+        final EditText inputNote = view.findViewById(R.id.note);
+        TextView dialogTitle = view.findViewById(R.id.dialog_title);
+        dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_note_title) : getString(R.string.lbl_edit_note_title));
+
+        if (shouldUpdate && itemEntity != null)
+        {
+            // append sets text to EditText and places the cursor at the end
+            inputNote.append(itemEntity.getItemNewValue()+ "");
+        }
+        alertDialogBuilderUserInput
+                .setCancelable(false)
+                .setPositiveButton(shouldUpdate ? getString(R.string.update) : getString(R.string.save), new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialogBox, int id)
+                    {
+
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel,
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialogBox, int id)
+                            {
+                                dialogBox.cancel();
+                            }
+                        });
+
+        final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
+        alertDialog.show();
+
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // Show toast message when no text is entered
+                if (TextUtils.isEmpty(inputNote.getText().toString()))
+                {
+                    Toast.makeText(ItemsActivity.this, getString(R.string.dialog_title_enter_note), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else
+                {
+                    alertDialog.dismiss();
+                }
+            }
+        });
+    }
+
 }

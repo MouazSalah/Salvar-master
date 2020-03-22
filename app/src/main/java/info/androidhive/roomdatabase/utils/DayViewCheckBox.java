@@ -1,3 +1,4 @@
+/*
 package info.androidhive.roomdatabase.utils;
 
 import android.content.Context;
@@ -5,13 +6,8 @@ import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
-
-
 import info.androidhive.roomdatabase.R;
 
-/**
- * Created by gautam on 13/07/17.
- */
 
 public class DayViewCheckBox extends AppCompatCheckBox {
 
@@ -37,3 +33,4 @@ public class DayViewCheckBox extends AppCompatCheckBox {
         super.setChecked(t);
     }
 }
+*/
